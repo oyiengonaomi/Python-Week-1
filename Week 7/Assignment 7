@@ -1,0 +1,102 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Task 1: Load and Explore the Dataset
+# Simulate loading a dataset from a CSV file
+data = {
+    'OrderID': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    'OrderDate': pd.to_datetime(['2025-01-01', '2025-01-05', '2025-01-10', '2025-01-15', '2025-02-01',
+                                  '2025-02-05', '2025-02-10', '2025-02-15', '2025-03-01', '2025-03-05']),
+    'Region': ['East', 'West', 'East', 'Central', 'West', 'East', 'Central', 'West', 'East', 'Central'],
+    'Category': ['Electronics', 'Clothing', 'Electronics', 'Home Goods', 'Clothing',
+                 'Electronics', 'Home Goods', 'Clothing', 'Electronics', 'Home Goods'],
+    'Sales': [100, 50, 120, 80, 60, 150, 90, 70, 130, 100],
+    'Quantity': [2, 5, 1, 3, 4, 2, 1, 6, 3, 2],
+    'UnitPrice': [50, 10, 120, 27, 15, 75, 90, 12, 43, 50],
+    'CustomerID': ['C001', 'C002', 'C001', 'C003', 'C002', 'C004', 'C003', 'C005', 'C001', 'C003'],
+    'MissingValue': [None, 5, None, 10, None, 12, None, 8, None, 15]
+}
+sales_df = pd.DataFrame(data)
+
+# Display the first few rows
+print("First few rows of the dataset:")
+print(sales_df.head())
+print("\n")
+
+# Explore the structure
+print("Data types of each column:")
+print(sales_df.dtypes)
+print("\n")
+
+print("Number of missing values per column:")
+print(sales_df.isnull().sum())
+print("\n")
+
+# Clean the dataset by filling missing values (for demonstration)
+sales_df['MissingValue'].fillna(sales_df['MissingValue'].mean(), inplace=True)
+print("Number of missing values after filling:")
+print(sales_df.isnull().sum())
+print("\n")
+
+# Task 2: Basic Data Analysis
+# Compute basic statistics of numerical columns
+print("Basic statistics of numerical columns:")
+print(sales_df.describe())
+print("\n")
+
+# Group by a categorical column and compute the mean of a numerical column
+grouped_sales = sales_df.groupby('Region')['Sales'].mean()
+print("Average sales per region:")
+print(grouped_sales)
+print("\n")
+
+# Identify patterns or interesting findings
+print("Interesting Findings:")
+print("The 'East' region appears to have the highest average sales based on this small sample.")
+print("The 'MissingValue' column had missing entries, which were imputed with the mean.")
+print("\n")
+
+# Task 3: Data Visualization
+# Set a style for the plots (optional)
+sns.set_style("whitegrid")
+
+# 1. Line chart showing trends over time (Sales trend)
+plt.figure(figsize=(10, 6))
+plt.plot(sales_df['OrderDate'], sales_df['Sales'], marker='o', linestyle='-')
+plt.title('Sales Trend Over Time')
+plt.xlabel('Order Date')
+plt.ylabel('Sales')
+plt.grid(True)
+plt.show()
+
+# 2. Bar chart showing comparison of a numerical value across categories (Average Sales per Category)
+average_sales_category = sales_df.groupby('Category')['Sales'].mean().sort_values(ascending=False)
+plt.figure(figsize=(10, 6))
+sns.barplot(x=average_sales_category.index, y=average_sales_category.values, palette='viridis')
+plt.title('Average Sales per Category')
+plt.xlabel('Category')
+plt.ylabel('Average Sales')
+plt.xticks(rotation=45, ha='right')
+plt.tight_layout()
+plt.show()
+
+# 3. Histogram of a numerical column to understand its distribution (Distribution of Unit Price)
+plt.figure(figsize=(8, 6))
+sns.histplot(sales_df['UnitPrice'], bins=10, kde=True, color='skyblue')
+plt.title('Distribution of Unit Price')
+plt.xlabel('Unit Price')
+plt.ylabel('Frequency')
+plt.show()
+
+# 4. Scatter plot to visualize the relationship between two numerical columns (Quantity vs. Sales)
+plt.figure(figsize=(8, 6))
+sns.scatterplot(x='Quantity', y='Sales', data=sales_df, color='coral', size='UnitPrice', alpha=0.7)
+plt.title('Relationship between Quantity and Sales (Size by Unit Price)')
+plt.xlabel('Quantity')
+plt.ylabel('Sales')
+plt.legend(title='Unit Price')
+plt.grid(True)
+plt.show()
+
+print("\nVisualizations created and displayed.")
